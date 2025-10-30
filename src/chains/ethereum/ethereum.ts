@@ -692,7 +692,7 @@ export class Ethereum {
       nativeSymbol: 'CELO',
     },
     abstract: {
-      address: '0x0000000000000000000000000000000000000000', // TODO: Replace with correct WETH address on Abstract
+      address: '0x3439153EB7AF838Ad19d56E1571FBD09333C2809', // TODO: Replace with correct WETH address on Abstract
       symbol: 'WETH', // TODO: Update if Abstract uses a different wrapped token symbol
       nativeSymbol: 'ETH', // TODO: Update if Abstract uses a different native token
     },

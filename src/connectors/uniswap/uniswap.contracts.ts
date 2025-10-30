@@ -202,21 +202,21 @@ export const contractAddresses: NetworkContractAddresses = {
     // Or Abstract's official documentation for Uniswap deployments
 
     // V2 contracts - Set to null if Uniswap V2 is not deployed on Abstract
-    uniswapV2RouterAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace or set to null
-    uniswapV2FactoryAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace or set to null
+    uniswapV2RouterAddress: '0xad1eCa41E6F772bE3cb5A48A6141f9bcc1AF9F7c', // TODO: Replace or set to null
+    uniswapV2FactoryAddress: '0x566d7510dEE58360a64C9827257cF6D0Dc43985E', // TODO: Replace or set to null
 
     // V3 contracts - Official Uniswap addresses (most likely available)
-    uniswapV3SwapRouter02Address: '0x0000000000000000000000000000000000000000', // TODO: Replace with SwapRouter02
-    uniswapV3NftManagerAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace with NonfungiblePositionManager
-    uniswapV3QuoterV2ContractAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace with QuoterV2
-    uniswapV3FactoryAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace with V3 Factory
+    uniswapV3SwapRouter02Address: '0x7712FA47387542819d4E35A23f8116C90C18767C', // TODO: Replace with SwapRouter02
+    uniswapV3NftManagerAddress: '0xfA928D3ABc512383b8E5E77edd2d5678696084F9', // TODO: Replace with NonfungiblePositionManager
+    uniswapV3QuoterV2ContractAddress: '0x728BD3eC25D5EDBafebB84F3d67367Cd9EBC7693', // TODO: Replace with QuoterV2
+    uniswapV3FactoryAddress: '0xA1160e73B63F322ae88cC2d8E700833e71D0b2a1', // TODO: Replace with V3 Factory
 
     // Universal Router V2 - Check if deployed on Abstract
-    universalRouterV2Address: '0x0000000000000000000000000000000000000000', // TODO: Replace with Universal Router V2
+    universalRouterV2Address: '0xE1b076ea612Db28a0d768660e4D81346c02ED75e', // TODO: Replace with Universal Router V2
 
     // V4 contracts - Only if V4 is deployed on Abstract (optional, can omit if not available)
-    uniswapV4PoolManagerAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace or remove if V4 not deployed
-    uniswapV4StateViewAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace or remove if V4 not deployed
+    // uniswapV4PoolManagerAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace or remove if V4 not deployed
+    // uniswapV4StateViewAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace or remove if V4 not deployed
   },
 };
 

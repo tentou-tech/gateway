@@ -103,5 +103,12 @@
     "symbol": "WSTETH",
     "address": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
     "decimals": 18
+  },
+  {
+    "chainId": 1,
+    "name": "Guild",
+    "symbol": "GUILD",
+    "address": "0x83e9f223e1edb3486f876ee888d76bfba26c475a",
+    "decimals": 18
   }
 ]
