@@ -1,0 +1,8 @@
+# Abstract Network Configuration
+# TODO: Fill in the correct values for Abstract chain
+# Reference: https://docs.abs.xyz/ (or your Abstract documentation)
+
+chainID: 0  # TODO: Replace with Abstract chain ID (e.g., 123456)
+nodeURL: https://rpc.abstract.xyz  # TODO: Replace with official Abstract RPC endpoint
+nativeCurrencySymbol: ETH  # TODO: Replace if Abstract uses a different native token (usually ETH for L2s)
+minGasPrice: 0.01  # TODO: Adjust based on Abstract's typical gas prices (in GWEI)

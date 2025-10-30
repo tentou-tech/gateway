@@ -196,6 +196,28 @@ export const contractAddresses: NetworkContractAddresses = {
     // Universal Router V2 - Official Uniswap address
     universalRouterV2Address: '0x8ac7bee993bb44dab564ea4bc9ea67bf9eb5e743',
   },
+  abstract: {
+    // TODO: Replace all addresses with official Uniswap deployment addresses for Abstract
+    // Check: https://docs.uniswap.org/contracts/v3/reference/deployments/
+    // Or Abstract's official documentation for Uniswap deployments
+
+    // V2 contracts - Set to null if Uniswap V2 is not deployed on Abstract
+    uniswapV2RouterAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace or set to null
+    uniswapV2FactoryAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace or set to null
+
+    // V3 contracts - Official Uniswap addresses (most likely available)
+    uniswapV3SwapRouter02Address: '0x0000000000000000000000000000000000000000', // TODO: Replace with SwapRouter02
+    uniswapV3NftManagerAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace with NonfungiblePositionManager
+    uniswapV3QuoterV2ContractAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace with QuoterV2
+    uniswapV3FactoryAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace with V3 Factory
+
+    // Universal Router V2 - Check if deployed on Abstract
+    universalRouterV2Address: '0x0000000000000000000000000000000000000000', // TODO: Replace with Universal Router V2
+
+    // V4 contracts - Only if V4 is deployed on Abstract (optional, can omit if not available)
+    uniswapV4PoolManagerAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace or remove if V4 not deployed
+    uniswapV4StateViewAddress: '0x0000000000000000000000000000000000000000', // TODO: Replace or remove if V4 not deployed
+  },
 };
 
 /**

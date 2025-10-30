@@ -1,0 +1,42 @@
+[
+  {
+    "chainId": 0,
+    "name": "Wrapped Ether",
+    "symbol": "WETH",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "comment": "TODO: Replace chainId, address with correct WETH address on Abstract"
+  },
+  {
+    "chainId": 0,
+    "name": "USD Coin",
+    "symbol": "USDC",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 6,
+    "comment": "TODO: Replace chainId, address with correct USDC address on Abstract"
+  },
+  {
+    "chainId": 0,
+    "name": "Tether USD",
+    "symbol": "USDT",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 6,
+    "comment": "TODO: Replace chainId, address with correct USDT address on Abstract"
+  },
+  {
+    "chainId": 0,
+    "name": "Dai Stablecoin",
+    "symbol": "DAI",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "comment": "TODO: Replace chainId, address with correct DAI address on Abstract"
+  },
+  {
+    "chainId": 0,
+    "name": "Wrapped Bitcoin",
+    "symbol": "WBTC",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 8,
+    "comment": "TODO: Replace chainId, address with correct WBTC address on Abstract"
+  }
+]
