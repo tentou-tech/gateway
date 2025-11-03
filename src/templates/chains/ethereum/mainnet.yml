@@ -1,4 +1,4 @@
 chainID: 1
-nodeURL: https://eth.llamarpc.com
+nodeURL: https://ethereum-mev-protection.kyberengineering.io
 nativeCurrencySymbol: ETH
 minGasPrice: 0.1
