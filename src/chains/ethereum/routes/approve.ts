@@ -31,22 +31,35 @@ export async function approveEthereumToken(
   let isUniversalRouter = false;
   let universalRouterAddress: string | null = null;
 
+  // Check if this network uses direct Universal Router approvals (like Abstract)
+  const usesDirectApproval = ['abstract'].includes(network.toLowerCase());
+
   // Determine the spender address based on the input
   let spenderAddress: string;
   try {
     // Check if the spender parameter is a connector name
     if (spender.includes('/') || spender === 'uniswap') {
-      // Special case: Universal Router V2 uses Permit2 for approvals
+      // Special case: Universal Router V2 uses Permit2 for approvals on most chains
+      // BUT some chains like Abstract use direct approvals
       if (spender === 'uniswap/router') {
-        logger.info(`Universal Router V2 approval requested - will handle Permit2 flow`);
-        isUniversalRouter = true;
-        // First approve to Permit2
-        spenderAddress = PERMIT2_ADDRESS;
-        // Get the actual Universal Router address for the second step
         universalRouterAddress = uniswapSpender(network, spender);
-        logger.info(
-          `Will approve token to Permit2, then grant Universal Router (${universalRouterAddress}) permission via Permit2`,
-        );
+
+        if (usesDirectApproval) {
+          // Direct approval flow for Abstract and similar networks
+          logger.info(
+            `Universal Router V2 approval requested for ${network} - using direct approval to ${universalRouterAddress}`,
+          );
+          spenderAddress = universalRouterAddress;
+        } else {
+          // Permit2 flow for most networks
+          logger.info(`Universal Router V2 approval requested - will handle Permit2 flow`);
+          isUniversalRouter = true;
+          // First approve to Permit2
+          spenderAddress = PERMIT2_ADDRESS;
+          logger.info(
+            `Will approve token to Permit2, then grant Universal Router (${universalRouterAddress}) permission via Permit2`,
+          );
+        }
       } else {
         logger.info(`Looking up spender address for connector: ${spender}`);
         spenderAddress = uniswapSpender(network, spender);
