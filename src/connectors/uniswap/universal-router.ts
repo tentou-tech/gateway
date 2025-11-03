@@ -234,16 +234,23 @@ export class UniversalRouterService {
     amount: CurrencyAmount<Currency>,
     tradeType: TradeType,
   ): Promise<V3Trade<Currency, Currency, TradeType> | null> {
+    const factoryAddress = getUniswapV3FactoryAddress(this.network);
+
+    // Factory ABI for getPool
+    const factoryAbi = ['function getPool(address tokenA, address tokenB, uint24 fee) external view returns (address)'];
+    const factoryContract = new Contract(factoryAddress, factoryAbi, this.provider);
+
     // Try each fee tier
     for (const fee of V3_FEE_TIERS) {
       try {
-        // Compute pool address
-        const poolAddress = computePoolAddress({
-          factoryAddress: getUniswapV3FactoryAddress(this.network),
-          tokenA: tokenIn,
-          tokenB: tokenOut,
-          fee,
-        });
+        // Query factory for pool address instead of computing it
+        // This works for chains with custom init code hashes (like Abstract)
+        const poolAddress = await factoryContract.getPool(tokenIn.address, tokenOut.address, fee);
+
+        // Check if pool exists (factory returns zero address if not)
+        if (poolAddress === '0x0000000000000000000000000000000000000000') {
+          continue;
+        }
 
         // Get pool contract
         const poolContract = new Contract(poolAddress, IUniswapV3Pool.abi, this.provider);
