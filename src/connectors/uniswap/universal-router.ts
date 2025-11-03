@@ -362,8 +362,8 @@ export class UniversalRouterService {
     logger.info(`[UniversalRouter] Calldata length: ${calldata.length}`);
 
     try {
-      // Get gas options from Ethereum
-      const gasOptions = await ethereum.prepareGasOptions(undefined, 500000);
+      // Get gas options from Ethereum with reasonable gas limit (typical Universal Router swaps use 150-250k)
+      const gasOptions = await ethereum.prepareGasOptions(undefined, 300000);
       logger.info(`[UniversalRouter] Gas options: ${JSON.stringify(gasOptions)}`);
 
       const gasEstimate = await this.provider.estimateGas({
@@ -371,7 +371,7 @@ export class UniversalRouterService {
         data: calldata,
         value,
         from,
-        gasLimit: BigNumber.from(600000), // Increase gas limit for estimation
+        gasLimit: BigNumber.from(350000), // Reasonable limit for Universal Router swaps
         ...gasOptions, // Include gas price options
       });
 
