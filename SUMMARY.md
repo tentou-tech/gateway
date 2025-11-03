@@ -271,3 +271,35 @@ You can now use:
 - Arbitrage strategies between the two networks
 
 Good luck with your trading! 🚀
+
+---
+
+## UPDATE: Config Endpoint Fix ✅
+
+**Issue Found:** The `uniswap-abstract` connector was not exposed via the `/config/connectors` endpoint.
+
+**Fix Applied:**
+- Modified `src/config/routes/getConnectors.ts`
+- Added `UniswapAbstractConfig` import
+- Added `uniswap-abstract` to the `connectorsConfig` array
+
+**Result:** The connector now appears in:
+```bash
+GET http://localhost:15888/config/connectors
+```
+
+**Response includes:**
+```json
+{
+  "name": "uniswap-abstract",
+  "trading_types": ["router"],
+  "chain": "ethereum",
+  "networks": ["abstract"]
+}
+```
+
+This makes the connector **discoverable by Hummingbot**! 🎉
+
+---
+
+**Total Files Modified:** 5 files (was 4, now includes getConnectors.ts)

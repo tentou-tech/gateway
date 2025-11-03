@@ -8,6 +8,7 @@ import { JupiterConfig } from '../../connectors/jupiter/jupiter.config';
 import { MeteoraConfig } from '../../connectors/meteora/meteora.config';
 import { RaydiumConfig } from '../../connectors/raydium/raydium.config';
 import { UniswapConfig } from '../../connectors/uniswap/uniswap.config';
+import { UniswapAbstractConfig } from '../../connectors/uniswap-abstract/uniswap-abstract.config';
 import { logger } from '../../services/logger';
 
 // Define the schema using Typebox
@@ -50,6 +51,12 @@ export const connectorsConfig = [
     trading_types: [...UniswapConfig.tradingTypes],
     chain: UniswapConfig.chain,
     networks: [...UniswapConfig.networks],
+  },
+  {
+    name: 'uniswap-abstract',
+    trading_types: [...UniswapAbstractConfig.tradingTypes],
+    chain: UniswapAbstractConfig.chain,
+    networks: [...UniswapAbstractConfig.networks],
   },
   {
     name: '0x',
