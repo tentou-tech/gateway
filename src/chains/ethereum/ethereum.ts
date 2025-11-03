@@ -184,11 +184,12 @@ export class Ethereum {
           const block = await this.provider.getBlock('latest');
           const baseFee = block.baseFeePerGas || BigNumber.from('0');
 
-          // Calculate recommended maxFeePerGas as 2 * baseFee + maxPriorityFeePerGas
-          const recommendedMaxFee = baseFee.mul(2).add(feeData.maxPriorityFeePerGas);
+          // Use a conservative multiplier (1.2x) for faster confirmation without overpaying
+          // This allows for 20% baseFee increase before next block
+          const recommendedMaxFee = baseFee.mul(12).div(10).add(feeData.maxPriorityFeePerGas);
 
-          // Use the higher of network estimate or our calculation
-          const maxFeePerGas = feeData.maxFeePerGas.gt(recommendedMaxFee) ? feeData.maxFeePerGas : recommendedMaxFee;
+          // Use the LOWER of network estimate or our calculation to minimize cost
+          const maxFeePerGas = feeData.maxFeePerGas.lt(recommendedMaxFee) ? feeData.maxFeePerGas : recommendedMaxFee;
 
           gasOptions.type = 2;
           gasOptions.maxFeePerGas = maxFeePerGas;
