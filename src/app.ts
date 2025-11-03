@@ -22,6 +22,7 @@ import { meteoraRoutes } from './connectors/meteora/meteora.routes';
 import { pancakeswapRoutes } from './connectors/pancakeswap/pancakeswap.routes';
 import { raydiumRoutes } from './connectors/raydium/raydium.routes';
 import { uniswapRoutes } from './connectors/uniswap/uniswap.routes';
+import { uniswapAbstractRoutes } from './connectors/uniswap-abstract/uniswap-abstract.routes';
 import { getHttpsOptions } from './https';
 import { poolRoutes } from './pools/pools.routes';
 import { ConfigManagerV2 } from './services/config-manager-v2';
@@ -237,6 +238,11 @@ const configureGatewayServer = () => {
     });
     app.register(uniswapRoutes.amm, { prefix: '/connectors/uniswap/amm' });
     app.register(uniswapRoutes.clmm, { prefix: '/connectors/uniswap/clmm' });
+
+    // Uniswap Abstract routes (locked to Abstract network)
+    app.register(uniswapAbstractRoutes.router, {
+      prefix: '/connectors/uniswap-abstract/router',
+    });
 
     // 0x routes
     app.register(register0xRoutes);

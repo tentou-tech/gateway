@@ -68,6 +68,10 @@ configurations:
     configurationPath: connectors/uniswap.yml
     schemaPath: uniswap-schema.json
 
+  $namespace uniswap-abstract:
+    configurationPath: connectors/uniswap-abstract.yml
+    schemaPath: uniswap-abstract-schema.json
+
   $namespace jupiter:
     configurationPath: connectors/jupiter.yml
     schemaPath: jupiter-schema.json
