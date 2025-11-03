@@ -207,9 +207,11 @@ export class Ethereum {
 
     // Fallback to legacy gas pricing (type 0)
     const gasPriceInGwei = gasPrice ?? (await this.estimateGasPrice());
+    // Round to 9 decimals max (gwei precision limit) to avoid parseUnits errors
+    const roundedGasPrice = Math.ceil(gasPriceInGwei * 1e9) / 1e9;
     gasOptions.type = 0;
-    gasOptions.gasPrice = utils.parseUnits(gasPriceInGwei.toString(), 'gwei');
-    logger.info(`Using legacy gas pricing: ${gasPriceInGwei} GWEI with gasLimit: ${gasOptions.gasLimit}`);
+    gasOptions.gasPrice = utils.parseUnits(roundedGasPrice.toFixed(9), 'gwei');
+    logger.info(`Using legacy gas pricing: ${roundedGasPrice} GWEI with gasLimit: ${gasOptions.gasLimit}`);
 
     return gasOptions;
   }

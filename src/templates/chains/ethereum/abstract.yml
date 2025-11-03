@@ -5,4 +5,4 @@
 chainID: 2741 # TODO: Replace with Abstract chain ID (e.g., 123456)
 nodeURL: https://api.mainnet.abs.xyz  # TODO: Replace with official Abstract RPC endpoint
 nativeCurrencySymbol: ETH  # TODO: Replace if Abstract uses a different native token (usually ETH for L2s)
-minGasPrice: 0.01  # TODO: Adjust based on Abstract's typical gas prices (in GWEI)
+minGasPrice: 0.1  # TODO: Adjust based on Abstract's typical gas prices (in GWEI)
