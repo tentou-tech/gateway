@@ -152,8 +152,9 @@ async function executeQuote(
       // Send the signed transaction
       const txResponse = await ethereum.provider.sendTransaction(signedTx);
 
-      // Wait for confirmation with timeout (30 seconds for hardware wallets)
-      txReceipt = await waitForTransactionWithTimeout(txResponse, 30000);
+      // Wait for confirmation with timeout (60 seconds for swaps)
+      // Universal Router swaps can take longer on Mainnet during high congestion
+      txReceipt = await waitForTransactionWithTimeout(txResponse, 60000);
     } else {
       // Regular wallet flow
       let wallet;
@@ -185,8 +186,9 @@ async function executeQuote(
       const txResponse = await wallet.sendTransaction(txData);
       logger.info(`Transaction sent: ${txResponse.hash}`);
 
-      // Wait for transaction confirmation with timeout
-      txReceipt = await waitForTransactionWithTimeout(txResponse);
+      // Wait for transaction confirmation with timeout (60 seconds for swaps)
+      // Universal Router swaps can take longer on Mainnet during high congestion
+      txReceipt = await waitForTransactionWithTimeout(txResponse, 60000);
     }
 
     // Log transaction info if available
