@@ -381,10 +381,18 @@ export class UniversalRouterService {
       // Check if this is a Permit2 AllowanceExpired error (0xd81b2f2e)
       const isPermit2Error = error.error && error.error.data && error.error.data.startsWith('0xd81b2f2e');
 
-      if (isPermit2Error) {
-        // This is expected if user hasn't approved tokens to Permit2 yet
-        logger.info(`[UniversalRouter] Gas estimation skipped - Permit2 approval needed`);
-        logger.debug(`[UniversalRouter] User needs to approve tokens to Permit2 before executing swap`);
+      // Check if this is a TransferFrom error (happens when token not approved or insufficient balance)
+      const isTransferFromError = error.reason && error.reason.includes('TRANSFER_FROM_FAILED');
+
+      if (isPermit2Error || isTransferFromError) {
+        // This is expected if user hasn't approved tokens yet
+        if (isPermit2Error) {
+          logger.info(`[UniversalRouter] Gas estimation skipped - Permit2 approval needed`);
+        } else {
+          logger.info(`[UniversalRouter] Gas estimation skipped - Token approval or balance check needed`);
+          logger.info(`[UniversalRouter] This can happen if tokens are not approved or insufficient balance`);
+        }
+        logger.debug(`[UniversalRouter] User should approve tokens before executing swap`);
       } else {
         // Log other errors as actual errors
         logger.error(`[UniversalRouter] Gas estimation failed:`, error);
@@ -398,7 +406,7 @@ export class UniversalRouterService {
       }
 
       // Use a higher default gas limit
-      const defaultGas = BigNumber.from(500000);
+      const defaultGas = BigNumber.from(300000);
       logger.info(`[UniversalRouter] Using default gas estimate: ${defaultGas.toString()}`);
       return defaultGas;
     }
