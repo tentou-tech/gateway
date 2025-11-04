@@ -184,19 +184,23 @@ export class Ethereum {
           const block = await this.provider.getBlock('latest');
           const baseFee = block.baseFeePerGas || BigNumber.from('0');
 
-          // Use a conservative multiplier (1.2x) for faster confirmation without overpaying
-          // This allows for 20% baseFee increase before next block
-          const recommendedMaxFee = baseFee.mul(12).div(10).add(feeData.maxPriorityFeePerGas);
+          // Optimize priority fee: use 85% of suggested (still fast, but cheaper)
+          // During normal conditions, 85% priority fee is sufficient for quick inclusion
+          const optimizedPriorityFee = feeData.maxPriorityFeePerGas.mul(85).div(100);
+
+          // Use a conservative multiplier (1.15x) for faster confirmation without overpaying
+          // This allows for 15% baseFee increase before next block - optimal for most conditions
+          const recommendedMaxFee = baseFee.mul(115).div(100).add(optimizedPriorityFee);
 
           // Use the LOWER of network estimate or our calculation to minimize cost
           const maxFeePerGas = feeData.maxFeePerGas.lt(recommendedMaxFee) ? feeData.maxFeePerGas : recommendedMaxFee;
 
           gasOptions.type = 2;
           gasOptions.maxFeePerGas = maxFeePerGas;
-          gasOptions.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
+          gasOptions.maxPriorityFeePerGas = optimizedPriorityFee;
 
           logger.info(
-            `Using EIP-1559 pricing: baseFee=${utils.formatUnits(baseFee, 'gwei')} GWEI, maxFee=${utils.formatUnits(maxFeePerGas, 'gwei')} GWEI, priority=${utils.formatUnits(feeData.maxPriorityFeePerGas, 'gwei')} GWEI`,
+            `Using EIP-1559 pricing: baseFee=${utils.formatUnits(baseFee, 'gwei')} GWEI, maxFee=${utils.formatUnits(maxFeePerGas, 'gwei')} GWEI, priority=${utils.formatUnits(optimizedPriorityFee, 'gwei')} GWEI (85% of ${utils.formatUnits(feeData.maxPriorityFeePerGas, 'gwei')} GWEI)`,
           );
 
           return gasOptions;

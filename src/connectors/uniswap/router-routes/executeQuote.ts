@@ -132,9 +132,15 @@ async function executeQuote(
       const ledger = new EthereumLedger();
       const nonce = await ethereum.provider.getTransactionCount(walletAddress, 'latest');
 
-      // Get gas options with increased gas limit for Universal Router V2
-      const gasLimit = 500000; // Increased for Universal Router V2
-      const gasOptions = await ethereum.prepareGasOptions(undefined, gasLimit);
+      // Get gas options using the estimated gas from the quote
+      // Add 20% buffer to the estimated gas to ensure transaction succeeds
+      const estimatedGas = quote.estimatedGasUsed.toNumber();
+      const gasLimitWithBuffer = Math.ceil(estimatedGas * 1.2);
+      logger.info(
+        `[executeQuote] Hardware wallet - Estimated gas: ${estimatedGas}, using ${gasLimitWithBuffer} (with 20% buffer)`,
+      );
+
+      const gasOptions = await ethereum.prepareGasOptions(undefined, gasLimitWithBuffer);
 
       // Build unsigned transaction with gas parameters
       const unsignedTx = {
@@ -165,11 +171,14 @@ async function executeQuote(
         throw fastify.httpErrors.internalServerError(`Failed to load wallet: ${err.message}`);
       }
 
-      // Get gas options with increased gas limit for Universal Router V2
-      // Uniswap Universal Router V2 swaps typically use between 200k-500k gas
-      const gasLimit = 500000; // Increased for Universal Router V2
-      const gasOptions = await ethereum.prepareGasOptions(undefined, gasLimit);
-      logger.info(`Using gas limit: ${gasOptions.gasLimit?.toString() || gasLimit}`);
+      // Get gas options using the estimated gas from the quote
+      // Add 20% buffer to the estimated gas to ensure transaction succeeds
+      const estimatedGas = quote.estimatedGasUsed.toNumber();
+      const gasLimitWithBuffer = Math.ceil(estimatedGas * 1.2);
+      logger.info(`[executeQuote] Estimated gas: ${estimatedGas}, using ${gasLimitWithBuffer} (with 20% buffer)`);
+
+      const gasOptions = await ethereum.prepareGasOptions(undefined, gasLimitWithBuffer);
+      logger.info(`[executeQuote] Gas limit set to: ${gasOptions.gasLimit?.toString() || gasLimitWithBuffer}`);
 
       // Build transaction parameters with gas options
       const txData = {
@@ -179,8 +188,6 @@ async function executeQuote(
         nonce: await ethereum.provider.getTransactionCount(walletAddress, 'latest'),
         ...gasOptions, // Include gas parameters from prepareGasOptions (includes gasLimit)
       };
-
-      logger.info(`Using gas options: ${JSON.stringify({ ...gasOptions, gasLimit: gasLimit.toString() })}`);
 
       // Send transaction directly without relying on ethers' automatic gas estimation
       const txResponse = await wallet.sendTransaction(txData);
