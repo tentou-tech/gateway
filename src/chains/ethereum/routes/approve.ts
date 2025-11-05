@@ -13,8 +13,16 @@ import { ApproveRequestSchema, ApproveResponseSchema, ApproveRequestType, Approv
 // Default gas limit for approve operations
 const APPROVE_GAS_LIMIT = 100000;
 
-// Permit2 address is constant across all chains
-const PERMIT2_ADDRESS = '0x000000000022D473030F116dDEE9F6B43aC78BA3';
+// Permit2 addresses - most chains use the canonical address, but some use custom deployments
+const PERMIT2_ADDRESS = '0x000000000022D473030F116dDEE9F6B43aC78BA3'; // Canonical Permit2
+const PERMIT2_ADDRESS_ABSTRACT = '0x0000000000225e31D15943971F47aD3022F714Fa'; // Abstract's custom Permit2
+
+function getPermit2Address(network: string): string {
+  if (network.toLowerCase() === 'abstract') {
+    return PERMIT2_ADDRESS_ABSTRACT;
+  }
+  return PERMIT2_ADDRESS;
+}
 
 export async function approveEthereumToken(
   fastify: FastifyInstance,
@@ -31,8 +39,10 @@ export async function approveEthereumToken(
   let isUniversalRouter = false;
   let universalRouterAddress: string | null = null;
 
-  // Check if this network uses direct Universal Router approvals (like Abstract)
-  const usesDirectApproval = ['abstract'].includes(network.toLowerCase());
+  // All networks use Permit2 for Universal Router V2
+  // Abstract uses a custom Permit2 deployment at 0x0000000000225e31D15943971F47aD3022F714Fa
+  const usesDirectApproval = false;
+  const permit2Address = getPermit2Address(network);
 
   // Determine the spender address based on the input
   let spenderAddress: string;
@@ -51,13 +61,14 @@ export async function approveEthereumToken(
           );
           spenderAddress = universalRouterAddress;
         } else {
-          // Permit2 flow for most networks
-          logger.info(`Universal Router V2 approval requested - will handle Permit2 flow`);
+          // Permit2 flow for most networks (including Abstract with custom Permit2)
+          logger.info(`Universal Router V2 approval requested - will handle Permit2 flow for ${network}`);
+          logger.info(`Using Permit2 address: ${permit2Address}`);
           isUniversalRouter = true;
           // First approve to Permit2
-          spenderAddress = PERMIT2_ADDRESS;
+          spenderAddress = permit2Address;
           logger.info(
-            `Will approve token to Permit2, then grant Universal Router (${universalRouterAddress}) permission via Permit2`,
+            `Will approve token to Permit2 (${permit2Address}), then grant Universal Router (${universalRouterAddress}) permission via Permit2`,
           );
         }
       } else {
@@ -98,8 +109,8 @@ export async function approveEthereumToken(
 
       // Step 1: Check ERC20 allowance (Token → Permit2)
       const tokenContract = ethereum.getContract(fullToken.address);
-      const erc20Allowance = await tokenContract.allowance(address, PERMIT2_ADDRESS);
-      logger.info(`ERC20 allowance (${fullToken.symbol} → Permit2): ${erc20Allowance.toString()}`);
+      const erc20Allowance = await tokenContract.allowance(address, permit2Address);
+      logger.info(`ERC20 allowance (${fullToken.symbol} → Permit2 ${permit2Address}): ${erc20Allowance.toString()}`);
 
       if (erc20Allowance.gte(amountBigNumber)) {
         logger.info(`Sufficient ERC20 allowance exists, skipping step 1`);
@@ -107,7 +118,7 @@ export async function approveEthereumToken(
 
         // Step 2: Check Permit2 allowance (Permit2 → Universal Router)
         const permit2Contract = new ethers.Contract(
-          PERMIT2_ADDRESS,
+          permit2Address,
           [
             'function allowance(address owner, address token, address spender) view returns (uint160 amount, uint48 expiration, uint48 nonce)',
           ],
@@ -278,7 +289,7 @@ export async function approveEthereumToken(
 
         // Build unsigned transaction
         const unsignedTx = {
-          to: PERMIT2_ADDRESS,
+          to: permit2Address,
           data: data,
           nonce: nonce,
           chainId: ethereum.chainId,
@@ -309,7 +320,7 @@ export async function approveEthereumToken(
       } else {
         // Regular wallet flow for Permit2 approve
         const wallet = await ethereum.getWallet(address);
-        const permit2Contract = new ethers.Contract(PERMIT2_ADDRESS, permit2ApproveABI, wallet);
+        const permit2Contract = new ethers.Contract(permit2Address, permit2ApproveABI, wallet);
 
         logger.info(
           `Calling Permit2.approve(${fullToken.address}, ${universalRouterAddress}, ${permit2Amount.toString()}, ${expiration})`,

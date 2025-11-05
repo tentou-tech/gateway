@@ -10,8 +10,16 @@ import { logger } from '../../../services/logger';
 import { quoteCache } from '../../../services/quote-cache';
 import { UniswapExecuteQuoteRequest } from '../schemas';
 
-// Permit2 address is constant across all chains
-const PERMIT2_ADDRESS = '0x000000000022D473030F116dDEE9F6B43aC78BA3';
+// Permit2 addresses - most chains use the canonical address, but some use custom deployments
+const PERMIT2_ADDRESS = '0x000000000022D473030F116dDEE9F6B43aC78BA3'; // Canonical Permit2
+const PERMIT2_ADDRESS_ABSTRACT = '0x0000000000225e31D15943971F47aD3022F714Fa'; // Abstract's custom Permit2
+
+function getPermit2Address(network: string): string {
+  if (network.toLowerCase() === 'abstract') {
+    return PERMIT2_ADDRESS_ABSTRACT;
+  }
+  return PERMIT2_ADDRESS;
+}
 
 async function executeQuote(
   fastify: FastifyInstance,
@@ -38,8 +46,10 @@ async function executeQuote(
   );
 
   // Check and approve allowance if needed
-  // Some networks (like Abstract) use direct Universal Router approvals instead of Permit2
-  const usesPermit2 = !['abstract'].includes(network.toLowerCase());
+  // All networks use Permit2 for Universal Router V2
+  // Abstract uses a custom Permit2 deployment at 0x0000000000225e31D15943971F47aD3022F714Fa
+  const usesPermit2 = true;
+  const permit2Address = getPermit2Address(network);
 
   if (inputToken.address !== ethereum.nativeTokenSymbol) {
     const requiredAllowance = BigNumber.from(quote.trade.inputAmount.quotient.toString());
@@ -47,10 +57,10 @@ async function executeQuote(
     const tokenContract = ethereum.getContract(inputToken.address, ethereum.provider);
 
     if (usesPermit2) {
-      // PERMIT2 FLOW: Token -> Permit2 -> Universal Router (Mainnet, Arbitrum, etc.)
+      // PERMIT2 FLOW: Token -> Permit2 -> Universal Router (Mainnet, Arbitrum, Abstract, etc.)
       // Step 1: Check token allowance to Permit2
-      logger.info(`Checking ${inputToken.symbol} allowance to Permit2`);
-      const tokenToPermit2Allowance = await tokenContract.allowance(walletAddress, PERMIT2_ADDRESS);
+      logger.info(`Checking ${inputToken.symbol} allowance to Permit2 (${permit2Address})`);
+      const tokenToPermit2Allowance = await tokenContract.allowance(walletAddress, permit2Address);
 
       if (BigNumber.from(tokenToPermit2Allowance).lt(requiredAllowance)) {
         const inputAmount = utils.formatUnits(requiredAllowance, inputToken.decimals);
@@ -71,7 +81,7 @@ async function executeQuote(
         'function allowance(address owner, address token, address spender) external view returns (uint160 amount, uint48 expiration, uint48 nonce)',
       ];
 
-      const permit2Contract = new ethers.Contract(PERMIT2_ADDRESS, permit2AllowanceABI, ethereum.provider);
+      const permit2Contract = new ethers.Contract(permit2Address, permit2AllowanceABI, ethereum.provider);
       const [permit2Amount, expiration, nonce] = await permit2Contract.allowance(
         walletAddress,
         inputToken.address,
