@@ -1,0 +1,5 @@
+# Abstract Chain Configuration
+# Default network is always 'abstract'
+defaultNetwork: abstract
+defaultWallet: ''
+rpcProvider: url

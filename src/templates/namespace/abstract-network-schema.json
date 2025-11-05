@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "chainID": {
+      "type": "integer",
+      "description": "Abstract chain ID"
+    },
+    "nodeURL": {
+      "type": "string",
+      "description": "RPC endpoint for Abstract network"
+    },
+    "nativeCurrencySymbol": {
+      "type": "string",
+      "description": "Native currency symbol (ETH)"
+    },
+    "minGasPrice": {
+      "type": "number",
+      "description": "Minimum gas price in GWEI"
+    }
+  },
+  "required": ["chainID", "nodeURL", "nativeCurrencySymbol"],
+  "additionalProperties": false
+}

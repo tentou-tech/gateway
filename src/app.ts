@@ -13,6 +13,7 @@ import Fastify, { FastifyInstance } from 'fastify';
 // Internal dependencies
 
 // Routes
+import { abstractRoutes } from './chains/abstract/abstract.routes';
 import { ethereumRoutes } from './chains/ethereum/ethereum.routes';
 import { solanaRoutes } from './chains/solana/solana.routes';
 import { configRoutes } from './config/config.routes';
@@ -71,6 +72,10 @@ const swaggerOptions = {
       {
         name: '/chain/ethereum',
         description: 'Ethereum and EVM-based chain endpoints',
+      },
+      {
+        name: '/chain/abstract',
+        description: 'Abstract chain endpoints',
       },
 
       // Connectors
@@ -217,6 +222,7 @@ const configureGatewayServer = () => {
     // Register chain routes
     app.register(solanaRoutes, { prefix: '/chains/solana' });
     app.register(ethereumRoutes, { prefix: '/chains/ethereum' });
+    app.register(abstractRoutes, { prefix: '/chains/abstract' });
 
     // Register DEX connector routes - organized by connector
 

@@ -13,6 +13,10 @@ configurations:
     configurationPath: chains/solana.yml
     schemaPath: solana-chain-schema.json
 
+  $namespace abstract:
+    configurationPath: chains/abstract.yml
+    schemaPath: abstract-chain-schema.json
+
   # Ethereum networks
   $namespace ethereum-mainnet:
     configurationPath: chains/ethereum/mainnet.yml
@@ -53,6 +57,11 @@ configurations:
   $namespace ethereum-abstract:
     configurationPath: chains/ethereum/abstract.yml
     schemaPath: ethereum-network-schema.json
+
+  # Abstract network
+  $namespace abstract-abstract:
+    configurationPath: chains/abstract/abstract.yml
+    schemaPath: abstract-network-schema.json
 
   # Solana networks
   $namespace solana-mainnet-beta:
