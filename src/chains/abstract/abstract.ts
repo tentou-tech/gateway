@@ -98,4 +98,45 @@ export class Abstract {
   public async estimateGasPrice(): Promise<number> {
     return this.getEthereumInstance().estimateGasPrice();
   }
+
+  // ===== METHODS NEEDED BY UNISWAP CONNECTOR =====
+  // These methods are required for uniswap-abstract connector to work
+
+  public getToken(tokenSymbol: string) {
+    return this.getEthereumInstance().getToken(tokenSymbol);
+  }
+
+  public getContract(tokenAddress: string, signerOrProvider?: any) {
+    return this.getEthereumInstance().getContract(tokenAddress, signerOrProvider);
+  }
+
+  public async getWallet(address: string) {
+    return this.getEthereumInstance().getWallet(address);
+  }
+
+  public async isHardwareWallet(address: string) {
+    return this.getEthereumInstance().isHardwareWallet(address);
+  }
+
+  public async prepareGasOptions(gasPrice?: number, gasLimit?: number) {
+    return this.getEthereumInstance().prepareGasOptions(gasPrice, gasLimit);
+  }
+
+  public handleTransactionConfirmation(
+    txReceipt: any,
+    inputToken: string,
+    outputToken: string,
+    expectedAmountIn: number,
+    expectedAmountOut: number,
+    side?: 'BUY' | 'SELL',
+  ) {
+    return this.getEthereumInstance().handleTransactionConfirmation(
+      txReceipt,
+      inputToken,
+      outputToken,
+      expectedAmountIn,
+      expectedAmountOut,
+      side,
+    );
+  }
 }

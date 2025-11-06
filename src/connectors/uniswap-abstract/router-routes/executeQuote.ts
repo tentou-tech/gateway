@@ -1,6 +1,6 @@
 import { FastifyPluginAsync, FastifyInstance } from 'fastify';
 
-import { getEthereumChainConfig } from '../../../chains/ethereum/ethereum.config';
+import { getAbstractChainConfig } from '../../../chains/abstract/abstract.config';
 import { ExecuteQuoteRequestType, SwapExecuteResponseType, SwapExecuteResponse } from '../../../schemas/router-schema';
 import { logger } from '../../../services/logger';
 import { executeQuote } from '../../uniswap/router-routes/executeQuote';
@@ -11,7 +11,7 @@ import { UniswapExecuteQuoteRequest } from '../../uniswap/schemas';
 export { executeQuote };
 
 export const executeQuoteRoute: FastifyPluginAsync = async (fastify) => {
-  const chainConfig = getEthereumChainConfig();
+  const chainConfig = getAbstractChainConfig();
 
   fastify.post<{
     Body: ExecuteQuoteRequestType;

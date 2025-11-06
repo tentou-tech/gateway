@@ -1,7 +1,7 @@
 import { Static } from '@sinclair/typebox';
 import { FastifyPluginAsync } from 'fastify';
 
-import { getEthereumChainConfig } from '../../../chains/ethereum/ethereum.config';
+import { getAbstractChainConfig } from '../../../chains/abstract/abstract.config';
 import { QuoteSwapRequestType } from '../../../schemas/router-schema';
 import { logger } from '../../../services/logger';
 import { quoteSwap } from '../../uniswap/router-routes/quoteSwap';
@@ -9,7 +9,7 @@ import { UniswapQuoteSwapRequest, UniswapQuoteSwapResponse } from '../../uniswap
 import { UniswapAbstractConfig } from '../uniswap-abstract.config';
 
 export const quoteSwapRoute: FastifyPluginAsync = async (fastify) => {
-  const chainConfig = getEthereumChainConfig();
+  const chainConfig = getAbstractChainConfig();
 
   fastify.get<{
     Querystring: QuoteSwapRequestType;
