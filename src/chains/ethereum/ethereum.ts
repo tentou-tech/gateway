@@ -168,11 +168,12 @@ export class Ethereum {
 
     // Check if the network supports EIP-1559
     const supportsEIP1559 =
-      this.chainId === 1 ||
-      this.chainId === 137 ||
-      this.chainId === 42161 ||
-      this.chainId === 10 ||
-      this.chainId === 8453;
+      this.chainId === 1 || // Ethereum Mainnet
+      this.chainId === 137 || // Polygon
+      this.chainId === 42161 || // Arbitrum
+      this.chainId === 10 || // Optimism
+      this.chainId === 8453 || // Base
+      this.chainId === 2741; // Abstract
 
     if (supportsEIP1559) {
       try {
