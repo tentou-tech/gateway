@@ -1,0 +1,26 @@
+[
+  {
+    "chainId": 2741,
+    "name": "Wrapped Ether",
+    "symbol": "WETH",
+    "address": "0x3439153EB7AF838Ad19d56E1571FBD09333C2809",
+    "decimals": 18,
+    "comment": "TODO: Replace chainId, address with correct WETH address on Abstract"
+  },
+  {
+    "chainId": 2741,
+    "name": "USDC.e",
+    "symbol": "USDC.e",
+    "address": "0x84A71ccD554Cc1b02749b35d22F684CC8ec987e1",
+    "decimals": 6,
+    "comment": "TODO: Replace chainId, address with correct USDC address on Abstract"
+  },
+  {
+    "chainId": 2741,
+    "name": "Guild",
+    "symbol": "GUILD",
+    "address": "0xcEA652aCCfd9Dab53Fa1242294F4910708Cc0cc2",
+    "decimals": 18,
+    "comment": "TODO: Replace chainId, address with correct DAI address on Abstract"
+  }
+]

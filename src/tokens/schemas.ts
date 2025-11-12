@@ -28,8 +28,8 @@ export type Token = typeof TokenSchema.static;
 export const TokenListQuerySchema = Type.Object({
   chain: Type.Optional(
     Type.String({
-      description: 'Blockchain network (e.g., ethereum, solana)',
-      examples: ['ethereum', 'solana'],
+      description: 'Blockchain network (e.g., ethereum, solana, abstract)',
+      examples: ['ethereum', 'solana', 'abstract'],
     }),
   ),
   network: Type.Optional(
@@ -51,8 +51,8 @@ export type TokenListQuery = typeof TokenListQuerySchema.static;
 // Query parameters for viewing a specific token
 export const TokenViewQuerySchema = Type.Object({
   chain: Type.String({
-    description: 'Blockchain network (e.g., ethereum, solana)',
-    examples: ['ethereum', 'solana'],
+    description: 'Blockchain network (e.g., ethereum, solana, abstract)',
+    examples: ['ethereum', 'solana', 'abstract'],
   }),
   network: Type.String({
     description: 'Network name (e.g., mainnet, mainnet-beta)',
@@ -65,8 +65,8 @@ export type TokenViewQuery = typeof TokenViewQuerySchema.static;
 // Request body for adding a token
 export const TokenAddRequestSchema = Type.Object({
   chain: Type.String({
-    description: 'Blockchain network (e.g., ethereum, solana)',
-    examples: ['ethereum', 'solana'],
+    description: 'Blockchain network (e.g., ethereum, solana, abstract)',
+    examples: ['ethereum', 'solana', 'abstract'],
   }),
   network: Type.String({
     description: 'Network name (e.g., mainnet, mainnet-beta)',
@@ -80,8 +80,8 @@ export type TokenAddRequest = typeof TokenAddRequestSchema.static;
 // Query parameters for removing a token
 export const TokenRemoveQuerySchema = Type.Object({
   chain: Type.String({
-    description: 'Blockchain network (e.g., ethereum, solana)',
-    examples: ['ethereum', 'solana'],
+    description: 'Blockchain network (e.g., ethereum, solana, abstract)',
+    examples: ['ethereum', 'solana', 'abstract'],
   }),
   network: Type.String({
     description: 'Network name (e.g., mainnet, mainnet-beta)',

@@ -54,6 +54,9 @@ export const setDefaultRoute: FastifyPluginAsync = async (fastify) => {
           validatedAddress = Ethereum.validateAddress(address);
         } else if (chain.toLowerCase() === 'solana') {
           validatedAddress = Solana.validateAddress(address);
+        } else if (chain.toLowerCase() === 'abstract') {
+          // Abstract uses Ethereum-compatible addresses
+          validatedAddress = Ethereum.validateAddress(address);
         } else {
           throw new Error(`Unsupported chain: ${chain}`);
         }

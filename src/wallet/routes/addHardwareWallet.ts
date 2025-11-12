@@ -41,7 +41,8 @@ async function addHardwareWallet(
     let validatedAddress: string;
 
     // Validate the provided address based on chain type
-    if (req.chain.toLowerCase() === 'ethereum') {
+    if (req.chain.toLowerCase() === 'ethereum' || req.chain.toLowerCase() === 'abstract') {
+      // Abstract uses Ethereum-compatible addresses
       validatedAddress = Ethereum.validateAddress(req.address);
     } else if (req.chain.toLowerCase() === 'solana') {
       validatedAddress = Solana.validateAddress(req.address);
@@ -59,7 +60,8 @@ async function addHardwareWallet(
         if (req.chain.toLowerCase() === 'solana') {
           const derivationPath = `44'/501'/${i}'`;
           walletInfo = await hardwareWalletService.getSolanaAddress(derivationPath);
-        } else if (req.chain.toLowerCase() === 'ethereum') {
+        } else if (req.chain.toLowerCase() === 'ethereum' || req.chain.toLowerCase() === 'abstract') {
+          // Abstract uses Ethereum derivation path
           const derivationPath = `44'/60'/0'/0/${i}`;
           walletInfo = await hardwareWalletService.getEthereumAddress(derivationPath);
         }
@@ -80,7 +82,8 @@ async function addHardwareWallet(
 
         // Check if the device is locked (error code 0x5515)
         if (error.message?.includes('0x5515') || error.message?.includes('Locked device')) {
-          const appName = req.chain.toLowerCase() === 'ethereum' ? 'Ethereum' : 'Solana';
+          const appName =
+            req.chain.toLowerCase() === 'ethereum' || req.chain.toLowerCase() === 'abstract' ? 'Ethereum' : 'Solana';
           throw fastify.httpErrors.badRequest(
             `Ledger device is locked. Please unlock your Ledger device and open the ${appName} app.`,
           );
@@ -88,7 +91,8 @@ async function addHardwareWallet(
 
         // Check if wrong app is open (error code 0x6a83)
         if (error.message?.includes('0x6a83') || error.message?.includes('UNKNOWN_ERROR')) {
-          const appName = req.chain.toLowerCase() === 'ethereum' ? 'Ethereum' : 'Solana';
+          const appName =
+            req.chain.toLowerCase() === 'ethereum' || req.chain.toLowerCase() === 'abstract' ? 'Ethereum' : 'Solana';
           throw fastify.httpErrors.badRequest(
             `Wrong Ledger app is open. Please open the ${appName} app on your Ledger device.`,
           );
@@ -117,7 +121,8 @@ async function addHardwareWallet(
 
         // Check if the device is locked (error code 0x5515)
         if (error.message?.includes('0x5515') || error.message?.includes('Locked device')) {
-          const appName = req.chain.toLowerCase() === 'ethereum' ? 'Ethereum' : 'Solana';
+          const appName =
+            req.chain.toLowerCase() === 'ethereum' || req.chain.toLowerCase() === 'abstract' ? 'Ethereum' : 'Solana';
           throw fastify.httpErrors.badRequest(
             `Ledger device is locked. Please unlock your Ledger device and open the ${appName} app.`,
           );
@@ -125,7 +130,8 @@ async function addHardwareWallet(
 
         // Check if wrong app is open (error code 0x6a83)
         if (error.message?.includes('0x6a83') || error.message?.includes('UNKNOWN_ERROR')) {
-          const appName = req.chain.toLowerCase() === 'ethereum' ? 'Ethereum' : 'Solana';
+          const appName =
+            req.chain.toLowerCase() === 'ethereum' || req.chain.toLowerCase() === 'abstract' ? 'Ethereum' : 'Solana';
           throw fastify.httpErrors.badRequest(
             `Wrong Ledger app is open. Please open the ${appName} app on your Ledger device.`,
           );

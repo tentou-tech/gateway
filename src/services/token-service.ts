@@ -208,14 +208,15 @@ export class TokenService {
     // Chain-specific validations
     switch (chain) {
       case SupportedChain.ETHEREUM:
+      case SupportedChain.ABSTRACT:
         try {
-          // Validate Ethereum address format and checksum
+          // Validate Ethereum address format and checksum (Abstract uses Ethereum-compatible addresses)
           const checksumAddress = ethers.utils.getAddress(token.address);
           if (token.address !== checksumAddress) {
-            throw new Error(`Invalid Ethereum address checksum. Expected: ${checksumAddress}`);
+            throw new Error(`Invalid Ethereum/Abstract address checksum. Expected: ${checksumAddress}`);
           }
         } catch (error) {
-          throw new Error(`Invalid Ethereum address: ${error.message}`);
+          throw new Error(`Invalid Ethereum/Abstract address: ${error.message}`);
         }
         break;
 

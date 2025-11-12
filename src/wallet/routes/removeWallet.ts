@@ -38,7 +38,8 @@ export const removeWalletRoute: FastifyPluginAsync = async (fastify) => {
 
       // Validate the address based on chain type
       let validatedAddress: string;
-      if (chain.toLowerCase() === 'ethereum') {
+      if (chain.toLowerCase() === 'ethereum' || chain.toLowerCase() === 'abstract') {
+        // Abstract uses Ethereum-compatible addresses
         validatedAddress = Ethereum.validateAddress(address);
       } else if (chain.toLowerCase() === 'solana') {
         validatedAddress = Solana.validateAddress(address);

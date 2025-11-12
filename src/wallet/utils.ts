@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import fse from 'fs-extra';
 
+import { Abstract } from '../chains/abstract/abstract';
 import { Ethereum } from '../chains/ethereum/ethereum';
 import { Solana } from '../chains/solana/solana';
 import { updateDefaultWallet } from '../config/utils';
@@ -43,7 +44,7 @@ export function validateChainName(chain: string): boolean {
   } catch (error) {
     // Fallback to hardcoded list if there's an error
     logger.warn(`Failed to get supported chains: ${error.message}. Using fallback list.`);
-    return ['ethereum', 'solana'].includes(chain.toLowerCase());
+    return ['ethereum', 'solana', 'abstract'].includes(chain.toLowerCase());
   }
 }
 
@@ -88,8 +89,15 @@ export async function addWallet(fastify: FastifyInstance, req: AddWalletRequest)
   let address: string | undefined;
   let encryptedPrivateKey: string | undefined;
 
-  // Default to mainnet-beta for Solana or mainnet for other chains
-  const network = req.chain === 'solana' ? 'mainnet-beta' : 'mainnet';
+  // Default to mainnet-beta for Solana, abstract for Abstract, or mainnet for other chains
+  let network: string;
+  if (req.chain === 'solana') {
+    network = 'mainnet-beta';
+  } else if (req.chain === 'abstract') {
+    network = 'abstract';
+  } else {
+    network = 'mainnet';
+  }
 
   try {
     connection = await getInitializedChain<Chain>(req.chain, network);
@@ -111,6 +119,13 @@ export async function addWallet(fastify: FastifyInstance, req: AddWalletRequest)
       // Further validate Solana address
       address = Solana.validateAddress(address);
       encryptedPrivateKey = await connection.encrypt(req.privateKey, passphrase);
+    } else if (connection instanceof Abstract) {
+      // Abstract uses Ethereum under the hood
+      const ethereumInstance = connection.getEthereumInstance();
+      address = ethereumInstance.getWalletFromPrivateKey(req.privateKey).address;
+      // Further validate Ethereum address
+      address = Ethereum.validateAddress(address);
+      encryptedPrivateKey = await ethereumInstance.encrypt(req.privateKey, passphrase);
     }
 
     if (address === undefined || encryptedPrivateKey === undefined) {
@@ -151,7 +166,8 @@ export async function removeWallet(fastify: FastifyInstance, req: RemoveWalletRe
 
     // Validate the address based on chain type
     let validatedAddress: string;
-    if (req.chain.toLowerCase() === 'ethereum') {
+    if (req.chain.toLowerCase() === 'ethereum' || req.chain.toLowerCase() === 'abstract') {
+      // Abstract uses Ethereum-compatible addresses
       validatedAddress = Ethereum.validateAddress(req.address);
     } else if (req.chain.toLowerCase() === 'solana') {
       validatedAddress = Solana.validateAddress(req.address);
@@ -184,7 +200,8 @@ export async function signMessage(fastify: FastifyInstance, req: SignMessageRequ
 
     // Validate the address based on chain type
     let validatedAddress: string;
-    if (req.chain.toLowerCase() === 'ethereum') {
+    if (req.chain.toLowerCase() === 'ethereum' || req.chain.toLowerCase() === 'abstract') {
+      // Abstract uses Ethereum-compatible addresses
       validatedAddress = Ethereum.validateAddress(req.address);
     } else if (req.chain.toLowerCase() === 'solana') {
       validatedAddress = Solana.validateAddress(req.address);
@@ -246,7 +263,7 @@ export async function getWallets(
     await mkdirIfDoesNotExist(walletPath);
 
     // Get only valid chain directories
-    const validChains = ['ethereum', 'solana'];
+    const validChains = ['ethereum', 'solana', 'abstract'];
     const allDirs = await getDirectories(walletPath);
     const chains = allDirs.filter((dir) => validChains.includes(dir.toLowerCase()));
 
@@ -262,8 +279,9 @@ export async function getWallets(
         // Additional validation for addresses based on chain type
         .filter((address) => {
           try {
-            if (chain.toLowerCase() === 'ethereum') {
+            if (chain.toLowerCase() === 'ethereum' || chain.toLowerCase() === 'abstract') {
               // Basic Ethereum address validation (0x + 40 hex chars)
+              // Abstract uses Ethereum-compatible addresses
               return /^0x[a-fA-F0-9]{40}$/i.test(address);
             } else if (chain.toLowerCase() === 'solana') {
               // Basic Solana address length check

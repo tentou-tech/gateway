@@ -3,7 +3,7 @@ import { ConfigManagerV2 } from '../../services/config-manager-v2';
 
 export namespace UniswapAbstractConfig {
   // Uniswap Abstract connector - locked to Abstract network only
-  export const chain = 'ethereum';
+  export const chain = 'abstract';
   export const networks = ['abstract']; // Fixed to Abstract network
   export type Network = 'abstract';
 
